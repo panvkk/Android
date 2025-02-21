@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ArtSpace</string>
+    <string name="aivazovskiy">Ivan Aivazovsky</string>
+    <string name="munk">Eduard Munk</string>
+    <string name="scream">The Scream</string>
+    <string name="scream_year">1893</string>
+    <string name="moonlit_landscape_with_a_ship">Lunar landscape with a Ship</string>
+    <string name="moonlit_landscape_with_a_ship_year">1700-s</string>
+    <string name="storm_on_the_sea_at_night_year">1783</string>
+    <string name="storm_on_the_sea_at_night">Storm on the Sea at Night</string>
+    <string name="the_wrath_of_the_seas">Wrath of the Seas</string>
+    <string name="the_wrath_of_the_seas_year">1775</string>
+    <string name="previous">previous</string>
+    <string name="next">next</string>
+    <string name="scream_info">The Scream by Edvard Munch is an iconic piece of Expressionist art, first created in 1893. The painting depicts a figure with an agonized expression standing on a bridge, set against a swirling, turbulent sky. The vivid, almost surreal colors and the undulating lines convey a sense of anxiety and existential dread. The artwork captures a moment of intense emotion and has become a symbol of modern human angst.</string>
+    <string name="moonlit_landscape_with_a_ship_info">Lunar Landscape with a Ship by Ivan Aivazovsky, painted in 1845, is a serene and mystical seascape. The painting shows a calm sea under the gentle light of a full moon, with a solitary ship gliding through the water. Aivazovsky\'s delicate brushwork and subtle use of light and color create a tranquil and dreamlike atmosphere. The reflection of the moon on the water adds to the ethereal quality of the scene, inviting the viewer to contemplate the beauty and tranquility of the night.</string>
+    <string name="storm_on_the_sea_at_night_info">Storm at Sea at Night by Ivan Aivazovsky is a breathtaking depiction of a nocturnal tempest. Painted in 1854, the artwork portrays a ship battling fierce waves under a dark, stormy sky illuminated by flashes of lightning. The contrast between the darkness and the bright bursts of light emphasizes the drama and danger of the scene. Aivazovsky\'s use of light and shadow creates a sense of depth and movement, making the viewer feel the intensity of the storm.</string>
+    <string name="the_wrath_of_the_seas_info">Wrath of the Seas by Ivan Aivazovsky, painted in 1886, is a dramatic seascape showcasing the powerful forces of nature. The painting depicts a violent storm at sea with towering waves crashing against a lone ship struggling to stay afloat. Aivazovsky masterfully captures the raw energy and tumultuous beauty of the ocean, using a rich palette of blues and grays to evoke a sense of awe and peril. The scene is a testament to human vulnerability in the face of nature\'s might.</string>
+</resources>

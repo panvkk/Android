@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SecondProject</string>
+    <string name="win_congratulation">Congratulations!\nYOU just won\n1.000.000$</string>
+</resources>

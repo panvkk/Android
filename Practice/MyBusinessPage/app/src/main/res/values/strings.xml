@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MyBusinessPage</string>
+    <string name="my_full_name">Konstantin Panov</string>
+    <string name="qualification">Android Developer(Kotlin)</string>
+    <string name="email_address">panov_konst@mail.ru</string>
+    <string name="phone_number">+375445345370</string>
+    <string name="telegram_link">\@ppnvk</string>
+</resources>

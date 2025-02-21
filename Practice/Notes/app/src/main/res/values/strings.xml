@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Notes App</string>
+    <string name="note_1">Buy groceries</string>
+    <string name="note_2">Call the dentist</string>
+    <string name="note_3">Finish the report</string>
+    <string name="note_4">Plan weekend trip</string>
+    <string name="note_5">Water the plants</string>
+    <string name="note_6">Read a new book</string>
+    <string name="note_7">Exercise for 30 minutes</string>
+    <string name="note_8">Prepare dinner</string>
+    <string name="note_9">Attend the meeting</string>
+    <string name="note_10">Write a blog post</string>
+
+    <!-- Time of reminder -->
+    <string name="time_1">2025-02-19 09:00</string>
+    <string name="time_2">2025-02-19 10:00</string>
+    <string name="time_3">2025-02-19 11:00</string>
+    <string name="time_4">2025-02-19 12:00</string>
+    <string name="time_5">2025-02-19 13:00</string>
+    <string name="time_6">2025-02-19 14:00</string>
+    <string name="time_7">2025-02-19 15:00</string>
+    <string name="time_8">2025-02-19 16:00</string>
+    <string name="time_9">2025-02-19 17:00</string>
+    <string name="time_10">2025-02-19 18:00</string>
+
+    <!-- Description of reminder -->
+    <string name="desc_1">Visit the supermarket</string>
+    <string name="desc_2">Dentist appointment at Main St.</string>
+    <string name="desc_3">Complete the report for project X</string>
+    <string name="desc_4">Weekend trip planning with friends</string>
+    <string name="desc_5">Water all indoor and outdoor plants</string>
+    <string name="desc_6">Finish reading the latest book</string>
+    <string name="desc_7">Daily exercise routine</string>
+    <string name="desc_8">Prepare dinner for family</string>
+    <string name="desc_9">Attend the project meeting in Room 401</string>
+    <string name="desc_10">Write a new blog post on tech trends</string>
+
+    <string name="top_bar">Notes</string>
+</resources>
