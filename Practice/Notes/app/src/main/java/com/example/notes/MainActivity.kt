@@ -1,6 +1,8 @@
 package com.example.notes
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -28,6 +30,7 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -45,6 +48,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.notes.model.Note
 import com.example.notes.model.getNotes
 import com.example.notes.ui.theme.NotesTheme
@@ -58,6 +62,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 @Composable
 fun NotesApp(notes: List<Note>, modifier: Modifier = Modifier) {
@@ -90,9 +95,9 @@ fun NoteCard(note: Note, modifier: Modifier = Modifier) {
     )
 
     Card(
-        shape = MaterialTheme.shapes.medium,
-        modifier = modifier
-            .clickable { expanded = !expanded }
+        modifier = modifier,
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+        shape = MaterialTheme.shapes.medium
     ) {
         Column(
             modifier = Modifier
@@ -103,6 +108,7 @@ fun NoteCard(note: Note, modifier: Modifier = Modifier) {
                     )
                 )
                 .background(color = color)
+                .clickable { expanded = !expanded }
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
