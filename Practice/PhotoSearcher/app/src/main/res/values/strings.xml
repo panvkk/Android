@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PhotoSearcher</string>
+    <string name="photo">Photo that was loaded</string>
+    <string name="is_connection_error">Can\'t load images about your query\n(check your connection)</string>
+    <string name="loading">Images are loading now</string>
+    <string name="photo_searcher">Photo Searcher</string>
+</resources>
