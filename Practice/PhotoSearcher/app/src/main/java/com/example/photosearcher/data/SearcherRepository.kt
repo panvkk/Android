@@ -13,8 +13,9 @@ class NetworkSearcherRepository(
     override suspend fun getPhotos(query: String):
             SearchResult = searcherApiService.getPhotos(
                 query = query,
-                apiKey = "AIzaSyB7Li8Jw50sTbrs8xlSeIHZ8lMzrnP9ZlU",
+                apiKey = "AIzaSyBu5rrZGACbdK_3E2v6SXQD60U30Ulaqr0",
                 customSearchEngineId = "e3d09e108fa7a4516",
-                searchingFields ="items(pagemap(cse_image))"
+                searchingFields ="items(link)",
+                searchType = "image"
             )
 }

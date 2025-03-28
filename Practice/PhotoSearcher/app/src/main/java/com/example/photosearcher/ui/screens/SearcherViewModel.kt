@@ -34,18 +34,17 @@ class SearcherViewModel(private val searcherRepository: SearcherRepository) : Vi
     var searcherUiState: SearcherUiState by mutableStateOf(SearcherUiState.Loading)
         private set
 
-    private val _userInput = MutableStateFlow("forest")
+    private val _userInput = MutableStateFlow("")
     val userInput: StateFlow<String> = _userInput
 
 
     init {
-        getPhotos(_userInput.value)
         viewModelScope.launch {
             _userInput
                 .debounce(300)
                 .distinctUntilChanged()
                 .collectLatest { query ->
-                    if(query != "") {
+                    if (query != "") {
                         getPhotos(query)
                     }
                 }
@@ -59,11 +58,10 @@ class SearcherViewModel(private val searcherRepository: SearcherRepository) : Vi
     }
 
     fun convertResult(searchResult: SearchResult): List<String> {
-        var photos: MutableList<String> = mutableListOf()
+        val photos: MutableList<String> = mutableListOf()
         searchResult.items.forEach {
-            val imageUrl = it.pagemap?.cseImage?.firstOrNull()?.src
-            if(imageUrl != null)
-                photos.add(imageUrl)
+            val imageUrl = it.link
+            photos.add(imageUrl)
         }
         val images: List<String> = photos
         return images
@@ -82,6 +80,7 @@ class SearcherViewModel(private val searcherRepository: SearcherRepository) : Vi
                 }
                 SearcherUiState.Error
             } catch(e: HttpException) {
+                Log.e("HTTP", "Ошибка: ${e.message}", e)
                 SearcherUiState.Error
             }
         }

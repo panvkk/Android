@@ -10,6 +10,7 @@ interface SearcherApiService {
         @Query("q") query: String,
         @Query("cx") customSearchEngineId: String,
         @Query("key") apiKey: String,
-        @Query("fields") searchingFields: String
+        @Query("fields") searchingFields: String,
+        @Query("searchType") searchType: String
     ): SearchResult
 }
