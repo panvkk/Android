@@ -41,7 +41,7 @@ class SearcherViewModel(private val searcherRepository: SearcherRepository) : Vi
     init {
         viewModelScope.launch {
             _userInput
-                .debounce(300)
+                .debounce(1500)
                 .distinctUntilChanged()
                 .collectLatest { query ->
                     if (query != "") {
