@@ -8,18 +8,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.flightsearch.R
 
 data class Airport(
@@ -34,9 +40,54 @@ data class Flight(
 
 
 @Composable
-fun HomeScreen() {
-    Scaffold() { contentPadding ->
+fun HomeScreen(
+    viewModel: FlightSearchViewModel = viewModel(factory = FlightSearchViewModel.Factory)
+) {
+    val currentInput by viewModel.userInput.collectAsState()
+
+    Scaffold(
+        topBar =  {
+            AppTopBar(
+                modifier = Modifier.padding(dimensionResource(R.dimen.large_padding)),
+                userInput = currentInput,
+                onValueChange = { }
+            )
+        }
+    ){ contentPadding ->
         val paddings = contentPadding
+    }
+}
+
+@Composable
+fun AppTopBar(
+    modifier: Modifier = Modifier,
+    onValueChange: (String) -> Unit,
+    userInput: String
+) {
+    Column(modifier) {
+        Text(stringResource(R.string.app_name))
+        EditQueryField(
+            value = userInput,
+            onValueChange = onValueChange
+        )
+    }
+}
+
+@Composable
+fun EditQueryField(
+    value: String,
+    onValueChange: (String) -> Unit,
+) {
+    Card(
+        elevation = CardDefaults.elevatedCardElevation(12.dp),
+        shape = RoundedCornerShape(32.dp)
+    ) {
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = { Text("Enter your query") },
+            singleLine = true
+        )
     }
 }
 
