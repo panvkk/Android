@@ -71,7 +71,7 @@ class SearcherViewModel(private val searcherRepository: SearcherRepository) : Vi
         viewModelScope.launch {
             searcherUiState = SearcherUiState.Loading
             searcherUiState = try {
-                SearcherUiState.Success(searcherRepository.getPho tos(userQuery))
+                SearcherUiState.Success(searcherRepository.getPhotos(userQuery))
             } catch(e: IOException) {
                 Log.e("YourTag", "Ошибка: ${e.message}", e)
 

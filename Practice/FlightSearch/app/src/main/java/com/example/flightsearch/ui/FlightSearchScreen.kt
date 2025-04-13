@@ -1,11 +1,16 @@
 package com.example.flightsearch.ui
 
+import android.graphics.Paint.Align
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,7 +23,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -27,34 +31,54 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.flightsearch.R
-
-data class Airport(
-    val iataCode: String,
-    val name: String
-)
+import com.example.flightsearch.data.airports.Airport
 
 data class Flight(
-    val Depart: Airport,
-    val Arrive: Airport
+    val depart: Airport,
+    val arrive: Airport,
+    val featured: Boolean
 )
 
 
 @Composable
 fun HomeScreen(
-    viewModel: FlightSearchViewModel = viewModel(factory = FlightSearchViewModel.Factory)
+    viewModel: FlightSearchViewModel,
+    searchUiState: SearchUiState
 ) {
     val currentInput by viewModel.userInput.collectAsState()
 
     Scaffold(
         topBar =  {
             AppTopBar(
-                modifier = Modifier.padding(dimensionResource(R.dimen.large_padding)),
+                modifier = Modifier.systemBarsPadding(),
                 userInput = currentInput,
-                onValueChange = { }
+                onValueChange = {
+                    viewModel.updateInput(it)
+                    viewModel.updateSuggestionList(it)
+                }
             )
         }
-    ){ contentPadding ->
-        val paddings = contentPadding
+    ) {
+        when(searchUiState) {
+            is SearchUiState.Input ->
+                AirportsList(
+                    airports = searchUiState.suggestions,
+                    viewModel = viewModel,
+                    modifier = Modifier.padding(it).fillMaxSize()
+                )
+            is SearchUiState.Query ->
+                FlightsList(
+                    flights = searchUiState.queryList,
+                    pageTitle = stringResource(R.string.query_list),
+                    modifier = Modifier.padding(it).fillMaxSize()
+                )
+            is SearchUiState.Empty ->
+                FlightsList(
+                    flights = emptyList(),
+                    pageTitle = stringResource(R.string.favourites_list),
+                    modifier = Modifier.padding(it).fillMaxSize()
+                )
+        }
     }
 }
 
@@ -64,7 +88,11 @@ fun AppTopBar(
     onValueChange: (String) -> Unit,
     userInput: String
 ) {
-    Column(modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         Text(stringResource(R.string.app_name))
         EditQueryField(
             value = userInput,
@@ -80,7 +108,7 @@ fun EditQueryField(
 ) {
     Card(
         elevation = CardDefaults.elevatedCardElevation(12.dp),
-        shape = RoundedCornerShape(32.dp)
+        shape = RoundedCornerShape(16.dp)
     ) {
         TextField(
             value = value,
@@ -94,39 +122,19 @@ fun EditQueryField(
 @Composable
 fun AirportsList(
     airports: List<Airport>,
-    pageTitle: String,
+    viewModel: FlightSearchViewModel,
     modifier: Modifier = Modifier
 ) {
-    Column {
-        Text(pageTitle)
-        LazyColumn {
-            items(airports) { airport ->
-                AirportRow(
-                    airport,
-                    modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding))
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun FlightsList(
-    flights: List<Flight>,
-    pageTitle: String,
-    modifier: Modifier = Modifier
-) {
-    Column {
-        Text(pageTitle)
-        LazyColumn {
-            items(flights) { flight ->
-                FlightCard(
-                    flight,
-                    modifier = Modifier
-                        .padding(dimensionResource(R.dimen.medium_padding))
-                        .fillMaxWidth()
-                )
-            }
+    LazyColumn(modifier) {
+        items(airports) { airport ->
+            AirportRow(
+                airport,
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.medium_padding))
+                    .clickable {
+                        viewModel.updateQuery(airport)
+                    }
+            )
         }
     }
 }
@@ -148,8 +156,35 @@ fun AirportRow(
 }
 
 @Composable
+fun FlightsList(
+    flights: List<Flight>,
+    pageTitle: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(pageTitle)
+        LazyColumn {
+            items(flights) { flight ->
+                FlightCard(
+                    flight,
+                    onClickBehavior = { },
+                    modifier = Modifier
+                        .padding(dimensionResource(R.dimen.medium_padding))
+                        .fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun FlightCard(
     flight: Flight,
+    onClickBehavior: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -166,10 +201,10 @@ fun FlightCard(
                     modifier = Modifier.padding(dimensionResource(R.dimen.small_padding))
                 ) {
                     Text(
-                        flight.Depart.iataCode,
+                        flight.depart.iataCode,
                         modifier = Modifier.padding(end = dimensionResource(R.dimen.small_padding))
                     )
-                    Text(flight.Depart.name)
+                    Text(flight.depart.name)
                 }
                 Text(
                     stringResource(R.string.arrive),
@@ -179,10 +214,10 @@ fun FlightCard(
                     modifier = Modifier.padding(dimensionResource(R.dimen.small_padding))
                 ) {
                     Text(
-                        flight.Arrive.iataCode,
+                        flight.arrive.iataCode,
                         modifier = Modifier.padding(end = dimensionResource(R.dimen.small_padding))
                     )
-                    Text(flight.Arrive.name)
+                    Text(flight.arrive.name)
                 }
             }
             Spacer(Modifier.weight(1f))
@@ -193,6 +228,9 @@ fun FlightCard(
                     .size(dimensionResource(R.dimen.icon_size))
                     .align(Alignment.CenterVertically)
                     .padding(dimensionResource(R.dimen.large_padding))
+                    .clickable {
+
+                    }
             )
         }
     }
@@ -202,30 +240,40 @@ fun FlightCard(
 @Composable
 fun FlightCardPreview() {
     val mock = Flight(
-        Depart = Airport(
+        depart = Airport(
             iataCode = "SVO",
-            name = "Sheremet'evo Airport"
+            name = "Sheremet'evo Airport",
+            id = 1,
+            passengers = 100
         ),
-        Arrive = Airport(
+        arrive = Airport(
             iataCode = "LAX",
-            name = "Los Angeles Airport"
-        )
+            name = "Los Angeles Airport",
+            id = 1,
+            passengers = 100
+        ),
+        featured = true
     )
-    FlightCard(mock)
+    FlightCard(mock, onClickBehavior = {} )
 }
 
 @Preview
 @Composable
 fun FlightsListPreview() {
     val mock = Flight(
-        Depart = Airport(
+        depart = Airport(
             iataCode = "SVO",
-            name = "Sheremet'evo Airport"
+            name = "Sheremet'evo Airport",
+            id = 1,
+            passengers = 100
         ),
-        Arrive = Airport(
+        arrive = Airport(
             iataCode = "LAX",
-            name = "Los Angeles Airport"
-        )
+            name = "Los Angeles Airport",
+            id = 1,
+            passengers = 100
+        ),
+        featured = true
     )
     FlightsList(listOf(mock, mock, mock, mock, mock), "Mock Flights lol")
 }
