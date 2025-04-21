@@ -1,13 +1,13 @@
 package com.example.flightsearch.data.favourites
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 interface FavouritesRepository {
     fun getAllFavouritesStream() : Flow<List<Favourite>>
+
+    suspend fun getByAirports(departCode: String, arriveCode: String) : List<Favourite>
+
+    suspend fun deleteByAirports(departCode: String, arriveCode: String)
 
     suspend fun insert(favourite: Favourite)
 

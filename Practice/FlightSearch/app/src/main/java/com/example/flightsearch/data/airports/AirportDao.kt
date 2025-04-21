@@ -13,4 +13,8 @@ interface AirportDao {
 
     @Query("SELECT * FROM airport")
     suspend fun getAllAirports() : List<Airport>
+
+    @Query("SELECT * FROM airport " +
+            "WHERE iata_code = :iataCode ")
+    suspend fun getByIata(iataCode: String) : Airport
 }

@@ -3,6 +3,8 @@
     <string name="depart">DEPART</string>
     <string name="arrive">ARRIVE</string>
     <string name="favourite">Add this flight to favourites</string>
+    <string name="remove_favourite">Remove this flight from favourites</string>
     <string name="query_list">Flights about your query</string>
     <string name="favourites_list">Your favourites flights</string>
+    <string name="loading">Page is loading…</string>
 </resources>

@@ -1,11 +1,9 @@
 package com.example.flightsearch.ui
 
-import android.graphics.Paint.Align
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,20 +21,27 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.flightsearch.R
 import com.example.flightsearch.data.airports.Airport
 
 data class Flight(
     val depart: Airport,
     val arrive: Airport,
-    val featured: Boolean
+    var favourite: Boolean
 )
 
 
@@ -49,55 +54,56 @@ fun HomeScreen(
 
     Scaffold(
         topBar =  {
-            AppTopBar(
-                modifier = Modifier.systemBarsPadding(),
-                userInput = currentInput,
-                onValueChange = {
-                    viewModel.updateInput(it)
-                    viewModel.updateSuggestionList(it)
-                }
+            Text(
+                stringResource(R.string.app_name),
+                fontSize = 24.sp,
+                modifier = Modifier.systemBarsPadding().padding(dimensionResource(R.dimen.medium_padding))
             )
         }
-    ) {
-        when(searchUiState) {
-            is SearchUiState.Input ->
-                AirportsList(
-                    airports = searchUiState.suggestions,
-                    viewModel = viewModel,
-                    modifier = Modifier.padding(it).fillMaxSize()
-                )
-            is SearchUiState.Query ->
-                FlightsList(
-                    flights = searchUiState.queryList,
-                    pageTitle = stringResource(R.string.query_list),
-                    modifier = Modifier.padding(it).fillMaxSize()
-                )
-            is SearchUiState.Empty ->
-                FlightsList(
-                    flights = emptyList(),
-                    pageTitle = stringResource(R.string.favourites_list),
-                    modifier = Modifier.padding(it).fillMaxSize()
-                )
+    ) { innerPadding ->
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            EditQueryField(
+                value = currentInput,
+                onValueChange = {
+                    viewModel.updateUserInput(it)
+                    if (it == "") {
+                        viewModel.updateEmpty()
+                    } else {
+                        viewModel.updateSuggestionList(it)
+                    }
+                }
+            )
+            when(searchUiState) {
+                is SearchUiState.Input ->
+                    AirportsList(
+                        airports = searchUiState.suggestionList,
+                        viewModel = viewModel,
+                    )
+                is SearchUiState.Query ->
+                    FlightsList(
+                        flights = searchUiState.queryList,
+                        pageTitle = stringResource(R.string.query_list),
+                        viewModel = viewModel,
+                    )
+                is SearchUiState.Empty ->
+                    FlightsList(
+                        flights = searchUiState.favouriteList,
+                        pageTitle = stringResource(R.string.favourites_list),
+                        viewModel = viewModel,
+                    )
+                is SearchUiState.Loading ->
+                    FlightsList(
+                        flights = emptyList(),
+                        pageTitle = stringResource(R.string.loading),
+                        viewModel = viewModel,
+                    )
+            }
         }
-    }
-}
-
-@Composable
-fun AppTopBar(
-    modifier: Modifier = Modifier,
-    onValueChange: (String) -> Unit,
-    userInput: String
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(stringResource(R.string.app_name))
-        EditQueryField(
-            value = userInput,
-            onValueChange = onValueChange
-        )
     }
 }
 
@@ -125,7 +131,10 @@ fun AirportsList(
     viewModel: FlightSearchViewModel,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier) {
+    LazyColumn(
+        modifier,
+        horizontalAlignment = Alignment.Start
+    ) {
         items(airports) { airport ->
             AirportRow(
                 airport,
@@ -158,6 +167,7 @@ fun AirportRow(
 @Composable
 fun FlightsList(
     flights: List<Flight>,
+    viewModel: FlightSearchViewModel,
     pageTitle: String,
     modifier: Modifier = Modifier
 ) {
@@ -166,15 +176,12 @@ fun FlightsList(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(pageTitle)
+        Text(pageTitle, modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding)))
         LazyColumn {
             items(flights) { flight ->
                 FlightCard(
                     flight,
-                    onClickBehavior = { },
-                    modifier = Modifier
-                        .padding(dimensionResource(R.dimen.medium_padding))
-                        .fillMaxWidth()
+                    viewModel = viewModel
                 )
             }
         }
@@ -184,15 +191,19 @@ fun FlightsList(
 @Composable
 fun FlightCard(
     flight: Flight,
-    onClickBehavior: () -> Unit,
+    viewModel: FlightSearchViewModel,
     modifier: Modifier = Modifier
 ) {
+    var isFavourite by remember { mutableStateOf(flight.favourite) }
+
     Card(
-        modifier,
+        modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding)),
         elevation = CardDefaults.elevatedCardElevation(dimensionResource(R.dimen.default_card_elevation))
     ) {
-        Row {
-            Column {
+        Row(horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding))) {
                 Text(
                     stringResource(R.string.depart),
                     modifier = Modifier.padding(dimensionResource(R.dimen.small_padding))
@@ -202,7 +213,8 @@ fun FlightCard(
                 ) {
                     Text(
                         flight.depart.iataCode,
-                        modifier = Modifier.padding(end = dimensionResource(R.dimen.small_padding))
+                        modifier = Modifier.padding(end = dimensionResource(R.dimen.small_padding)),
+                        fontWeight = FontWeight.Bold
                     )
                     Text(flight.depart.name)
                 }
@@ -215,24 +227,49 @@ fun FlightCard(
                 ) {
                     Text(
                         flight.arrive.iataCode,
-                        modifier = Modifier.padding(end = dimensionResource(R.dimen.small_padding))
+                        modifier = Modifier.padding(end = dimensionResource(R.dimen.small_padding)),
+                        fontWeight = FontWeight.Bold
                     )
                     Text(flight.arrive.name)
                 }
             }
-            Spacer(Modifier.weight(1f))
-            Icon(
-                painter = painterResource(R.drawable.favourite),
-                contentDescription = stringResource(R.string.favourite),
-                modifier = Modifier
-                    .size(dimensionResource(R.dimen.icon_size))
+            FavouriteIcon(
+                isFavourite = isFavourite,
+                modifier = modifier
                     .align(Alignment.CenterVertically)
+                    .size(dimensionResource(R.dimen.icon_size))
                     .padding(dimensionResource(R.dimen.large_padding))
                     .clickable {
-
+                        isFavourite = !isFavourite
+                        if(flight.favourite) {
+                            viewModel.deleteFavourite(flight)
+                        } else {
+                            viewModel.addFavourite(flight)
+                        }
                     }
             )
         }
+    }
+}
+
+@Composable
+fun FavouriteIcon(
+    isFavourite: Boolean,
+    modifier: Modifier = Modifier
+) {
+    if(isFavourite) {
+        Icon(
+            painter = painterResource(R.drawable.favourite),
+            contentDescription = stringResource(R.string.remove_favourite),
+            tint = Color.Red,
+            modifier = modifier
+        )
+    } else {
+        Icon(
+            painter = painterResource(R.drawable.favourite),
+            contentDescription = stringResource(R.string.favourite),
+            modifier = modifier
+        )
     }
 }
 
@@ -252,9 +289,9 @@ fun FlightCardPreview() {
             id = 1,
             passengers = 100
         ),
-        featured = true
+        favourite = true
     )
-    FlightCard(mock, onClickBehavior = {} )
+    FlightCard(mock, viewModel())
 }
 
 @Preview
@@ -273,7 +310,7 @@ fun FlightsListPreview() {
             id = 1,
             passengers = 100
         ),
-        featured = true
+        favourite = true
     )
-    FlightsList(listOf(mock, mock, mock, mock, mock), "Mock Flights lol")
+    FlightsList(listOf(mock, mock, mock, mock, mock), viewModel(), "Mock Flights lol")
 }
