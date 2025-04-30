@@ -2,28 +2,64 @@ package com.example.pixelsorting.data
 
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.asFlow
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
+import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.example.pixelsorting.IMAGE_MANIPULATION_WORK_NAME
+import com.example.pixelsorting.KEY_EFFECT_LEVEL
+import com.example.pixelsorting.KEY_IMAGE_URI
+import com.example.pixelsorting.KEY_INPUT_SETTINGS
+import com.example.pixelsorting.KEY_SORT_KEY
+import com.example.pixelsorting.KEY_SORT_TYPE
+import com.example.pixelsorting.TAG_OUTPUT
 import com.example.pixelsorting.model.PixelSortingSettings
+import com.example.pixelsorting.workers.CleanupWorker
+import com.example.pixelsorting.workers.SaveImageToFileWorker
+import com.example.pixelsorting.workers.SortingWorker
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.serialization.json.Json
 
 class WorkManagerPSRepo(val context: Context) : PSRepo {
     private val workManager = WorkManager.getInstance(context)
 
-    override val outputWorkInfo: Flow<WorkInfo>
-        get() = TODO("Not yet implemented")
+    override val outputWorkInfo: Flow<WorkInfo> =
+        workManager.getWorkInfosByTagLiveData(TAG_OUTPUT).asFlow().mapNotNull {
+            if(it.isNotEmpty()) it.first() else null
+        }
 
     override fun applyWork(settings: PixelSortingSettings) {
-        TODO("Not yet implemented")
+        var continuation = workManager.beginUniqueWork(
+            IMAGE_MANIPULATION_WORK_NAME,
+            ExistingWorkPolicy.REPLACE,
+            OneTimeWorkRequest.from(CleanupWorker::class.java)
+        )
+
+        val pixelSortingBuilder = OneTimeWorkRequestBuilder<SortingWorker>()
+        pixelSortingBuilder.setInputData(createDataForWorkRequest(settings))
+
+        continuation = continuation.then(pixelSortingBuilder.build())
+
+        val save = OneTimeWorkRequestBuilder<SaveImageToFileWorker>()
+            .addTag(TAG_OUTPUT)
+            .build()
+
+        continuation = continuation.then(save)
+
+        continuation.enqueue()
     }
 
     override fun cancelWork() {
-        TODO("Not yet implemented")
+        workManager.cancelUniqueWork(IMAGE_MANIPULATION_WORK_NAME)
     }
 
     private fun createDataForWorkRequest(settings: PixelSortingSettings) : Data {
-        val builder: Data.Builder()
-        builder.put
+        val builder = Data.Builder()
+        builder.putString(KEY_INPUT_SETTINGS, Json.encodeToString(settings))
+        return builder.build()
     }
 }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Pixel Sorting</string>
+    <string name="error_cleaning_file">Error while cleaning up unnecessary files</string>
+    <string name="writing_to_mediaStore_failed">Error while writing to mediaStore</string>
 </resources>
