@@ -26,8 +26,8 @@ This project aims to showcase the implementation of a photo search feature using
 ## Technologies Used
 
 - **Kotlin** – Primary programming language.
-- **Retrofit (or similar)** – For handling network requests and API interactions.
-- **Glide/Picasso** – For efficient image loading and caching.
+- **Retrofit** – For handling network requests and API interactions.
+- **Coil** – For efficient image loading and caching.
 - **Android Jetpack Components:**  
   Including ViewModel, LiveData, and Navigation for streamlined app architecture.
 - **Material Design Components** – To create a modern and intuitive UI.
