@@ -14,7 +14,7 @@ This repository is organized into several folders that showcase various aspects 
 - **Practice/**  
   Includes experimental projects and practice exercises aimed at reinforcing new technologies and design patterns.
 
-- **Exercices/**
+- **Exercices/**  
   Contains projects directly related to the study of new technologies
 
 Throughout this repository, you will find examples of:
