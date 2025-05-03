@@ -6,7 +6,7 @@ PhotoSearcher is an Android practice project that demonstrates how to build a mo
 
 This project aims to showcase the implementation of a photo search feature using modern Android technologies. It covers:
 - **Network Integration:** Fetching photo data from an external API.
-- **Dynamic UI:** Displaying search results in a responsive column layout.
+- **Dynamic UI:** Displaying search results in a responsive column.
 - **Modern Architecture:** Leveraging contemporary Android Jetpack components (e.g., ViewModel and LiveData) for a clean, maintainable codebase.
 
 ## Features
