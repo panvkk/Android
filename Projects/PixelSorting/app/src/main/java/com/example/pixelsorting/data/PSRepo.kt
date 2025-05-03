@@ -9,4 +9,5 @@ interface PSRepo {
     val outputWorkInfo: Flow<WorkInfo>
     fun applyWork(settings: PixelSortingSettings)
     fun cancelWork()
+    fun saveWork(imageUri: String)
 }

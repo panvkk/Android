@@ -1,5 +1,13 @@
 package com.example.pixelsorting
 
+val VERBOSE_NOTIFICATION_CHANNEL_NAME: CharSequence =
+    "Verbose WorkManager Notifications"
+const val VERBOSE_NOTIFICATION_CHANNEL_DESCRIPTION =
+    "Shows notifications whenever work starts"
+val NOTIFICATION_TITLE: CharSequence = "Pixel Sorter"
+const val CHANNEL_ID = "VERBOSE_NOTIFICATION"
+const val NOTIFICATION_ID = 1
+
 const val IMAGE_MANIPULATION_WORK_NAME = "image_manipulation_work"
 
 const val KEY_INPUT_SETTINGS = "KEY_INPUT_SETTINGS"

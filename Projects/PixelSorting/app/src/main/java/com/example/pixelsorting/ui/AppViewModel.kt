@@ -1,8 +1,5 @@
 package com.example.pixelsorting.ui
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -11,7 +8,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.work.WorkInfo
 import com.example.pixelsorting.KEY_IMAGE_URI
-import com.example.pixelsorting.KEY_SORT_KEY
 import com.example.pixelsorting.PixelSortingApplication
 import com.example.pixelsorting.data.PSRepo
 import com.example.pixelsorting.model.PixelSortingSettings
@@ -20,13 +16,13 @@ import com.example.pixelsorting.model.SortType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 
 sealed interface SortingUiState {
-    object Loading : SortingUiState
-    object Default : SortingUiState
+    data object Loading : SortingUiState
+    data object Default : SortingUiState
     data class Complete(val outputUri: String) : SortingUiState
 }
 
@@ -62,10 +58,10 @@ class AppViewModel(private val pixelSortingRepo: PSRepo) : ViewModel() {
     val settings: StateFlow<PixelSortingSettings> = _settings
 
     fun updateSettings(
-        imageUri: String,
-        effectLevel: Int,
-        sortKey: SortKey,
-        sortType: SortType,
+        imageUri: String = settings.value.imageUri,
+        effectLevel: Int = settings.value.effectLevel,
+        sortKey: SortKey = settings.value.sortKey,
+        sortType: SortType = settings.value.sortType,
     ) {
         _settings.update {
             PixelSortingSettings(
@@ -83,6 +79,10 @@ class AppViewModel(private val pixelSortingRepo: PSRepo) : ViewModel() {
 
     fun cancelSorting() {
         pixelSortingRepo.cancelWork()
+    }
+
+    fun saveImage(imageUri: String) {
+        pixelSortingRepo.saveWork(imageUri)
     }
 
     companion object {

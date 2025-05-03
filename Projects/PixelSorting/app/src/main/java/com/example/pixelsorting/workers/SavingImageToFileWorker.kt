@@ -45,6 +45,8 @@ class SaveImageToFileWorker(ctx: Context, params: WorkerParameters) : CoroutineW
                 if (!imageUrl.isNullOrEmpty()) {
                     val output = workDataOf(KEY_IMAGE_URI to imageUrl)
 
+                    makeStatusNotification("Image saved", applicationContext)
+
                     Result.success(output)
                 } else {
                     Log.e(
@@ -53,6 +55,8 @@ class SaveImageToFileWorker(ctx: Context, params: WorkerParameters) : CoroutineW
                             R.string.writing_to_mediaStore_failed
                         )
                     )
+                    makeStatusNotification("Error! Image not saved", applicationContext)
+
                     Result.failure()
                 }
             } catch (exception: Exception) {
@@ -61,6 +65,8 @@ class SaveImageToFileWorker(ctx: Context, params: WorkerParameters) : CoroutineW
                     applicationContext.resources.getString(R.string.error_cleaning_file),
                     exception
                 )
+                makeStatusNotification("Error! Image not saved", applicationContext)
+
                 Result.failure()
             }
         }
