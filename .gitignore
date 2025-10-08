@@ -1,13 +1,13 @@
-.idea/
+*.idea/
 *.iml
-.idea/caches
-.idea/libraries
-.idea/modules.xml
-.idea/workspace.xml
-.idea/navEditor.xml
-.idea/assetWizardSettings.xml
+*.idea/caches
+*.idea/libraries
+*.idea/modules.xml
+*.idea/workspace.xml
+*.idea/navEditor.xml
+*.idea/assetWizardSettings.xml
 
-.gradle/
+*.gradle/
 **/build/
 !gradle/wrapper/gradle-wrapper.jar
 
